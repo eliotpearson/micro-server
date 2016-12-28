@@ -37,8 +37,8 @@ public class MicroserverApp {
     private final CompletableFuture end = new CompletableFuture();
 
     @Getter
-    private final ApplicationContext springContext;
-
+    private ApplicationContext springContext;
+    
     /**
      * This will construct a Spring context for this Microserver instance.
      * The calling class will be used to determine the base package to auto-scan from for Spring Beans
@@ -48,14 +48,7 @@ public class MicroserverApp {
      * @param modules Multiple Microservice end points that can be deployed within a single Spring context
      */
     public MicroserverApp(Module... modules) {
-        this.modules = ListX.of(modules);
-        GlobalState.state.setModules(this.modules);
-        initSpringProperties(modules[0]);
-        Class c = extractClass();
-        springContext = new SpringContextFactory(
-                                                 new MicroserverConfigurer().buildConfig(c), extractClass(),
-                                                 modules[0].getSpringConfigurationClasses()).createSpringContext();
-
+        this(null, modules);
     }
 
     /**
@@ -68,13 +61,21 @@ public class MicroserverApp {
      * @param modules Multiple Microservice end points that can be deployed within a single Spring context
      */
     public MicroserverApp(Class c, Module... modules) {
-
+    	
+    	if(c == null) {
+    		c = extractClass();
+    	}
+    	
         this.modules = ListX.of(modules);
         GlobalState.state.setModules(this.modules);
         initSpringProperties(modules[0]);
-        springContext = new SpringContextFactory(
+        try {
+        	springContext = new SpringContextFactory(
                                                  new MicroserverConfigurer().buildConfig(c), c,
                                                  modules[0].getSpringConfigurationClasses()).createSpringContext();
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
 
     }
 

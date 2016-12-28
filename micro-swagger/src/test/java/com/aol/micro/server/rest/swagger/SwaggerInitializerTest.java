@@ -3,6 +3,7 @@ package com.aol.micro.server.rest.swagger;
 import org.junit.Test;
 
 import com.aol.cyclops.data.collections.extensions.persistent.PStackX;
+import com.aol.micro.server.model.ServletStatusResource;
 import com.aol.micro.server.servers.model.ServerData;
 import com.google.common.collect.ImmutableList;
 
